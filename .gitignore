@@ -1,0 +1,10 @@
+# Secrets and passenger data never go in git
+.env
+.env.*
+!.env.example
+service/data/*.csv
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/

@@ -2,6 +2,8 @@
 
 Version 0.3 (draft), 26 Nov 2026. Supersedes v0.2. v0.3 settles who can fly alone in a split (11.1) and what must happen with the customer before any split is confirmed (11.2).
 
+> **Implementation status.** `service/` implements the bulletin rules (sections 5, 7.1, 9, 12) and the routing in 9.3. It departs from this spec on seating: sections 7.2 and 11 (age bands, who can fly alone, the consent protocol before a split, no scattered seats) are reduced to warnings, because the service follows a simpler rule set (see `service/README.md`, "Where this departs from the spec"). Until one is updated to match the other, the service is the behaviour that runs and this document is the intended safeguard.
+
 Rules come from the *Storm Travel Waiver Fare Rules Bulletin (Denver, November 2026)*, issued 15 Nov 2026 and encoded in `rules/storm-waiver-den-nov26.yaml`. Behaviour the bulletin does not cover is labelled **floor practice** (from the Rosalind Mkhize interview, INT-ROSALIND-01) or **spec rule** (our design choice). Unconfirmed items are tagged `[ASSUMPTION]` and tracked in `docs/open-questions.md`. Evidence is in `docs/evidence.md`.
 
 ## 1. Purpose and goal
