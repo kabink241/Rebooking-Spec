@@ -89,8 +89,4 @@ I ran the rules over all 140 bookings and compared every party of 4 against your
 
 Booking notes (not passenger names) are sent to the model. Free OpenRouter endpoints may log prompts, so check their data policy before using real customer notes.
 
-## What has not been run
 
-- No live Supabase load and no live model call yet. The loader, the OpenRouter client, the Supabase repo, and `record_demo` are tested against fakes and a mock server (93 tests), and `supabase/setup.sql` passes the Postgres parser. Steps 4 to 6 above turn that into a real run.
-- The prompt has not been compared across real models. The first thing to check is whether your chosen `:free` model returns clean JSON.
-- On the real queue (rules only): 127 of 140 bookings get a suggestion. Of the 21 parties of 4, 1 fits together, 7 are split, and 13 get no automatic option. All 7 splits are for customers whose note says they must sit together.
