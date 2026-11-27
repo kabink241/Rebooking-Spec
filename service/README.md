@@ -44,7 +44,7 @@ Code builds the valid candidates first. The model sees only those (plus the book
 3. Create the tables: paste `../supabase/setup.sql` into the Supabase SQL editor and run it (safe to re-run).
 4. Put the two CSVs in `data/` as `cancelled_bookings_denver_storm.csv` and `flight_seat_availability.csv` (git-ignored: they hold passenger names), or pass paths with `--bookings` and `--flights`.
 5. `python -m scripts.load_csv_to_supabase --dry-run`, then `python -m scripts.load_csv_to_supabase`. It upserts both tables, quarantines bad rows into `ingest_rejects`, and reads the counts back (expect 140 bookings, 153 flights, 1 rejected row). Safe to re-run.
-6. `python -m scripts.check_env`
+6. `python -m scripts.check_env --ping-model` (every line `ok`), then `python -m scripts.record_demo BKG-10023` for one real end-to-end run that also rewrites the BKG-10023 block in the root `README.md`
 7. `uvicorn app.main:app --reload` (docs at `/docs`).
 
 CSV mode (`DATA_BACKEND=csv`) skips Supabase for local runs.
@@ -87,4 +87,4 @@ The waiver accepts requests through 23 Nov 2026 (clauses 1.5, 2.5). Every reques
 
 ## Test
 
-`pytest` runs 85 tests: the bulletin rules, the five rebooking rules, notes parsing, the picker (invented flights, bad JSON, injection), the OpenRouter client over a mock server (headers, retries, failures, no key leakage), the API, the Supabase repo and loader against fake clients, CSV quarantine, the migration SQL, and every one of the 140 real results checked against the rules when the CSVs are present.
+`pytest` runs 93 tests: the bulletin rules, the five rebooking rules, notes parsing, the picker (invented flights, bad JSON, injection), the OpenRouter client over a mock server (headers, retries, failures, no key leakage), the API, the Supabase repo and loader against fake clients, CSV quarantine, the migration SQL, and every one of the 140 real results checked against the rules when the CSVs are present.

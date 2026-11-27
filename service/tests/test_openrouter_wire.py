@@ -86,3 +86,15 @@ def test_the_api_key_never_appears_in_the_prompt_or_the_stored_error(monkeypatch
     b, c = case()
     r = asyncio.run(picker(handler).pick(b, c, True))
     assert all("sk-or-test" not in body for body in sent) and "sk-or-test" not in (r.error or "")
+
+
+def test_a_client_error_is_not_retried_and_shows_the_providers_message():
+    calls = []
+
+    def handler(req):
+        calls.append(1)
+        return httpx.Response(404, json={"error": {"message": "No endpoints found matching your data policy"}})
+
+    b, c = case()
+    r = asyncio.run(picker(handler).pick(b, c, True))
+    assert len(calls) == 1 and r.picked_by == "rules_fallback" and "data policy" in r.error and "404" in r.error

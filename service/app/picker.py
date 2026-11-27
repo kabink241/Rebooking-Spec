@@ -61,8 +61,9 @@ class OpenRouterClient:
             try:
                 r = await self.http.post(url, headers=headers, json=body)
                 if r.status_code in (429, 500, 502, 503, 504):
-                    raise httpx.HTTPStatusError(f"HTTP {r.status_code}", request=r.request, response=r)
-                r.raise_for_status()
+                    raise httpx.HTTPStatusError(f"HTTP {r.status_code}: {r.text[:200]}", request=r.request, response=r)
+                if r.status_code >= 400:  # a bad key, model id, or data policy: retrying will not help
+                    raise RuntimeError(f"OpenRouter HTTP {r.status_code}: {r.text[:200]}")
                 data = r.json()
                 if data.get("error"):
                     raise ValueError(f"OpenRouter error: {data['error']}")

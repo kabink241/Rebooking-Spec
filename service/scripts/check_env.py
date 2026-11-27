@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import os
 import sys
 
@@ -25,9 +26,22 @@ def list_free_models(s) -> int:
     return 0
 
 
+def ping_model(s, http=None) -> tuple[bool, str]:
+    """One tiny completion with the configured key and model. Returns (ok, message); never includes the key."""
+    from app.picker import OpenRouterClient
+
+    try:
+        out = asyncio.run(OpenRouterClient(s, http=http).complete("Reply with exactly: OK", "ping"))
+    except Exception as exc:
+        return False, f"{type(exc).__name__}: {exc}"[:300]
+    text = " ".join(out["text"].split())[:60]
+    return True, f"{s.openrouter_model} replied {text!r}"
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list-free-models", action="store_true")
+    ap.add_argument("--ping-model", action="store_true", help="make one tiny call to the configured free model")
     args = ap.parse_args(argv)
     try:
         s = get_settings()
@@ -63,6 +77,14 @@ def main(argv=None) -> int:
     else:
         line("bookings csv", os.path.exists(s.bookings_csv), s.bookings_csv)
         line("flights csv", os.path.exists(s.flights_csv), s.flights_csv)
+    if args.ping_model:
+        if s.openrouter_api_key and s.openrouter_model:
+            good, msg = ping_model(s)
+            line("model ping", good, msg)
+            if not good and "404" in msg:
+                print("       A 404 about a data policy usually means free endpoints are switched off in your OpenRouter privacy settings.")
+        else:
+            line("model ping", False, "(needs OPENROUTER_API_KEY and OPENROUTER_MODEL)")
     line("SERVICE_API_KEY (auth on)", bool(s.service_api_key), "- leave empty only for local use")
     return 0 if ok else 1
 
