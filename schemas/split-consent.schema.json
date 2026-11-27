@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SplitConsentRecord",
+  "description": "Recorded before a split can be booked (SPEC 11.2). All required fields must be true or present.",
+  "type": "object",
+  "required": [
+    "option_id",
+    "comparison_shown",
+    "split_stated",
+    "fare_treatment_stated",
+    "consent",
+    "conditions_resolved",
+    "seats_reverified"
+  ],
+  "properties": {
+    "option_id": {
+      "type": "string"
+    },
+    "comparison_shown": {
+      "type": "boolean",
+      "description": "Split and earliest all-together option shown side by side (step 1)."
+    },
+    "split_stated": {
+      "type": "boolean",
+      "description": "Groups, flights, times, seats and arrival gap stated (step 2)."
+    },
+    "fare_treatment_stated": {
+      "type": "boolean",
+      "description": "Clause 3.5 for covered, per-member amounts for not covered (step 3)."
+    },
+    "consent": {
+      "type": "object",
+      "required": [
+        "given_by",
+        "covers_separate_traveler"
+      ],
+      "properties": {
+        "given_by": {
+          "type": "string",
+          "description": "Adult in the party who said yes to this exact split."
+        },
+        "covers_separate_traveler": {
+          "enum": [
+            "on_call",
+            "confirmed_by_caller"
+          ]
+        },
+        "teen_guardian_consent": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Required true when a teen travels without an adult."
+        }
+      }
+    },
+    "conditions_resolved": {
+      "type": "boolean",
+      "description": "Any condition set by the customer is resolved and the final plan restated with a second yes (step 5)."
+    },
+    "lead_approval": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "lead_name": {
+          "type": "string"
+        }
+      },
+      "description": "Required when configured (OQ-06). Never replaces consent."
+    },
+    "seats_reverified": {
+      "type": "boolean"
+    },
+    "cross_links_verified": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Set after booking (step 8)."
+    }
+  }
+}
